@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<body>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/skycons/1396634940/skycons.js"></script>
+
+
+<script>
+var x = document.getElementById("demo");
+
+function getLocation() {
+    if (navigator.geolocation) {
+    	$('#result').html("Gaining weather .......");
+        navigator.geolocation.getCurrentPosition(showPosition);
+
+    } else { 
+        alert("Geolocation Unsupported by your browser ! Please upgrade your browser");
+    }
+}
+
+
+
+function showPosition(position) {
+     var latt = position.coords.latitude ; 
+  	 var long =   position.coords.longitude;
+  	
+  	 url = 'https://api.darksky.net/forecast/YOUR-APP-ID-PROVIDED-BY-DARKSY/'+latt+','+long+'?units=ca';
+  	 $.ajax({
+  url: url,
+  dataType: "jsonp",
+  success: function (data) {
+    //managing the things to show
+    var timezone = data.timezone;
+    var latitude = data.latitude;
+    var longitude = data.longitude;
+    var current_summary = data.currently.summary;
+    var current_temperature = data.currently.temperature;
+    var current_uv = data.currently.uvIndex;
+    var current_wind = data.currently.windSpeed;
+    var current_humidity = data.currently.humidity;
+    var current_ozone = data.currently.ozone;
+    var current_dew = data.currently.dewPoint;
+    var current_pressure = data.currently.pressure;
+    var today_summary = data.hourly.summary;
+    var weekly_summary = data.daily.summary;
+    var current_icon = data.currently.icon;
+    var today_icon = data.hourly.icon;
+    var weekly_icon = data.daily.icon;
+
+
+
+
+
+    $('#result').html(`
+    	<div class = "container">
+    	<div class= "card">
+    	<div class="card-header">
+    	Your weather details
+    	</div>
+    	<div class = "card-block">
+       	<b>   Timezone  : </b> `+ timezone +` <br>
+    	<b> Your  longitude : </b> `+longitude+` <br>
+    	<b> Your  latitude : </b> `+latitude+` <br>
+      	<b> Current Details : </b> `+current_summary+`  
+      	<canvas id="icon1" width="50" height="50"> </canvas><br>
+    	<b>   Whole day Details :  </b> `+today_summary +` 
+    	<canvas id="icon2" width="50" height="50"></canvas><br>
+    	<b>  This week Details :  </b> `+ weekly_summary+` 
+    	<canvas id="icon3" width="50" height="50"></canvas><br>
+    	<b> Temperature  : </b> `+current_temperature+` °C <br>
+    	<b> Uv index : </b> `+ current_uv +` <br>
+    	<b>  Wind Speed  : </b> `+ current_wind+` Km per Hour <br>
+       	<b>  Humidity :   </b> `+ current_humidity+` <br>
+    	<b>  Ozone :  </b> `+current_ozone +` Dobson units<br>
+    	<b>   Dew Point :  </b> `+ current_dew+` °C <br>
+    	<b>   Pressure </b> `+ current_pressure+`  Millibars <br>
+    	</div>
+    	</div>
+
+
+
+
+
+
+
+    	`);
+
+    skycons.add("icon1",current_icon);
+    skycons.add("icon2",today_icon);
+    skycons.add("icon3",weekly_icon);
+
+    
+  }
+
+
+});
+
+}
+</script>
+<div id="result"> </div>
+
+<script>
+  var skycons = new Skycons({"color": "black"});
+  
+  skycons.play();
+   getLocation();
+</script>
+</body>
+</html>
